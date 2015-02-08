@@ -6,7 +6,7 @@
 *  
 * Original code at https://github.com/moderndevice/Wind_Sensor
 * 
-* Modern Device Wind Sensor Sketch for Rev C Wind Sensor
+ Modern Device Wind Sensor Sketch for Rev C Wind Sensor
  This sketch is only valid if the wind sensor if powered from 
  a regulated 5 volt supply. An Arduino or Modern Device BBB, RBBB
  powered from an external power supply should work fine. Powering from
@@ -40,17 +40,17 @@ When using an Arduino to power the sensor, an external power supply is better. M
  
  */
 
-
 #define analogPinForRV    1   // change to pins you the analog pins are using
 #define analogPinForTMP   0
 
 // to calibrate your sensor, put a glass over it, but the sensor should not be
 // touching the desktop surface however.
 // adjust the zeroWindAdjustment until your sensor reads about zero with the glass over it. 
+// (John Keefe note: I didn't do any of that for the candle project)
 
 const float zeroWindAdjustment =  .2; // negative numbers yield smaller wind speeds and vice versa.
 
-int TMP_Therm_ADunits;  //temp termistor value from wind sensor
+int TMP_Therm_ADunits;  //temp thermistor value from wind sensor
 float RV_Wind_ADunits;    //RV output from wind sensor 
 float RV_Wind_Volts;
 unsigned long lastMillis;
@@ -84,6 +84,7 @@ void setup() {
 
 void loop() {
   
+  // get the state of the button, HIGH (1) or LOW (0)
   buttonState = digitalRead(buttonPin);
 
   if (millis() - lastMillis > 200){      // read every 200 ms - printing slows this down further
@@ -124,10 +125,12 @@ void loop() {
     
     Serial.println(buttonState);
     
+    // run the douseCandle function if the wind speed deteted is more than 6 mph
     if (WindSpeed_MPH > 6) {
       douseCandle();
     }
     
+    // relight the LED if the button is being pushed
     if (buttonState == HIGH) {
       lightCandle();
     }
@@ -141,17 +144,20 @@ void douseCandle() {
 
   // turn LED off
   digitalWrite(led, LOW);
-  
-  // wait 5 seconds
-  // delay(5000);
-  
-  // turn LED on
-  // digitalWrite(led, HIGH);
+
+    // Before I installed the button, I used the following
+    // two lines to test the LED and detector together, dousing the LED
+    // for 5 seconds and then relighting it. Like those annoying
+    // birthday candles.
+    
+    // delay(5000);              // wait 5 seconds
+    // digitalWrite(led, HIGH);  // turn LED back on
 
 }
 
 void lightCandle() {
 
+  // turn LED on
   digitalWrite(led, HIGH);
   
 }
